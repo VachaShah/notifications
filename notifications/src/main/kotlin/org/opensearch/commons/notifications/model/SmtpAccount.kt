@@ -35,12 +35,12 @@ import org.opensearch.common.xcontent.ToXContent
 import org.opensearch.common.xcontent.XContentBuilder
 import org.opensearch.common.xcontent.XContentParser
 import org.opensearch.common.xcontent.XContentParserUtils
-import org.opensearch.commons.notifications.NotificationConstants.FROM_ADDRESS_FIELD
-import org.opensearch.commons.notifications.NotificationConstants.HOST_FIELD
-import org.opensearch.commons.notifications.NotificationConstants.METHOD_FIELD
-import org.opensearch.commons.notifications.NotificationConstants.PASSWORD_FIELD
-import org.opensearch.commons.notifications.NotificationConstants.PORT_FIELD
-import org.opensearch.commons.notifications.NotificationConstants.USERNAME_FIELD
+import org.opensearch.commons.notifications.NotificationConstants.FROM_ADDRESS_TAG
+import org.opensearch.commons.notifications.NotificationConstants.HOST_TAG
+import org.opensearch.commons.notifications.NotificationConstants.METHOD_TAG
+import org.opensearch.commons.notifications.NotificationConstants.PASSWORD_TAG
+import org.opensearch.commons.notifications.NotificationConstants.PORT_TAG
+import org.opensearch.commons.notifications.NotificationConstants.USERNAME_TAG
 import org.opensearch.commons.utils.fieldIfNotNull
 import org.opensearch.commons.utils.isValidEmail
 import org.opensearch.commons.utils.logger
@@ -94,22 +94,22 @@ data class SmtpAccount(
                 val fieldName = parser.currentName()
                 parser.nextToken()
                 when (fieldName) {
-                    HOST_FIELD -> host = parser.text()
-                    PORT_FIELD -> port = parser.intValue()
-                    METHOD_FIELD -> method = valueOf(parser.text(), MethodType.None, log)
-                    FROM_ADDRESS_FIELD -> fromAddress = parser.text()
-                    USERNAME_FIELD -> username = SecureString(parser.text().toCharArray())
-                    PASSWORD_FIELD -> password = SecureString(parser.text().toCharArray())
+                    HOST_TAG -> host = parser.text()
+                    PORT_TAG -> port = parser.intValue()
+                    METHOD_TAG -> method = valueOf(parser.text(), MethodType.None, log)
+                    FROM_ADDRESS_TAG -> fromAddress = parser.text()
+                    USERNAME_TAG -> username = SecureString(parser.text().toCharArray())
+                    PASSWORD_TAG -> password = SecureString(parser.text().toCharArray())
                     else -> {
                         parser.skipChildren()
                         log.info("Unexpected field: $fieldName, while parsing SmtpAccount")
                     }
                 }
             }
-            host ?: throw IllegalArgumentException("$HOST_FIELD field absent")
-            port ?: throw IllegalArgumentException("$PORT_FIELD field absent")
-            method ?: throw IllegalArgumentException("$METHOD_FIELD field absent")
-            fromAddress ?: throw IllegalArgumentException("$FROM_ADDRESS_FIELD field absent")
+            host ?: throw IllegalArgumentException("$HOST_TAG field absent")
+            port ?: throw IllegalArgumentException("$PORT_TAG field absent")
+            method ?: throw IllegalArgumentException("$METHOD_TAG field absent")
+            fromAddress ?: throw IllegalArgumentException("$FROM_ADDRESS_TAG field absent")
             return SmtpAccount(
                 host,
                 port,
@@ -127,12 +127,12 @@ data class SmtpAccount(
     override fun toXContent(builder: XContentBuilder?, params: ToXContent.Params?): XContentBuilder {
         builder!!
         builder.startObject()
-        builder.field(HOST_FIELD, host)
-            .field(PORT_FIELD, port)
-            .field(METHOD_FIELD, method)
-            .field(FROM_ADDRESS_FIELD, fromAddress)
-            .fieldIfNotNull(USERNAME_FIELD, username?.toString())
-            .fieldIfNotNull(PASSWORD_FIELD, password?.toString())
+        builder.field(HOST_TAG, host)
+            .field(PORT_TAG, port)
+            .field(METHOD_TAG, method)
+            .field(FROM_ADDRESS_TAG, fromAddress)
+            .fieldIfNotNull(USERNAME_TAG, username?.toString())
+            .fieldIfNotNull(PASSWORD_TAG, password?.toString())
         return builder.endObject()
     }
 
